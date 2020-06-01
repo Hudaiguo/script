@@ -6,7 +6,7 @@
 """
 import os
 
-def txt(save_txt_path, path):
+def merge_txt(save_txt_path, path):
     """
     #将多个文本合并到一个新建的文本之中。
     :param save_txt_path: 新建文本保存路径
@@ -23,4 +23,4 @@ def txt(save_txt_path, path):
 if __name__ == "__main__":
     text_path = r""
     save_text_path = r""
-    txt(save_text_path, text_path)
+    merge_txt(save_text_path, text_path)
