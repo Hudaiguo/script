@@ -18,19 +18,23 @@ def read_json(read_path):
         return json.load(json_fd)
 
 
-def write_json(save_path):
+def write_json(save_path, dict_=None):
     """
     将字典数据保存为json格式数据,一行一条数据且按keys排序。
     :param save_path: 保存json文件的路径及名称。
+    :param dict_: 需要保存的字典数据。
     :return: None
     """
-    model = {}
+    if dict_ is None:
+        dict_ = {}
+        print("warning: write data is None! \n")
     with open(save_path, 'a+', encoding='utf-8') as json_ad:
-        json.dump(model, json_ad, ensure_ascii=False, indent=1, sort_keys=True)
+        json.dump(dict_, json_ad, ensure_ascii=False, indent=1, sort_keys=True)
 
 
 if __name__ == "__main__":
     path = r""
-    write_json(path)
+    test = {"a": 0, "b": 1, "c": 2}
+    write_json(path, dict_=test)
     path = r"char_map.json"
     char_map = read_json(path)
