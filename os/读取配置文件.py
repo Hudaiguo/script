@@ -17,7 +17,7 @@ def parser_cfg_file(cfg_file):
     net_params = {}
     train_params = {}
 
-    config = cp.ConfigParser() #实例
+    config = cp.ConfigParser()  # 实例
     config.read(cfg_file)
 
     for section in config.sections():
@@ -33,9 +33,10 @@ def parser_cfg_file(cfg_file):
 
     return net_params, train_params
 
-if __name__=='__main__':
-    net_params, train_params = parser_cfg_file('../net.cfg')
-    print(net_params, "\n", train_params)
+
+if __name__ == '__main__':
+    net_params_, train_params_ = parser_cfg_file('../net.cfg')
+    print(net_params_, "\n", train_params_)
 
     # 配置文件的添加和保存
     config = cp.ConfigParser()  # 类中一个方法 #实例化一个对象
