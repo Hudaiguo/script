@@ -1,0 +1,19 @@
+syntax="proto3";   //使用proto版本3
+
+package test;     //起个包名
+
+//写服务
+service Say_hello{   //服务名
+//定义接口和数据类型  hello_hu 函数名
+   rpc hello_hu(hello_hu_request)   returns(hello_hu_reply){}
+}
+
+//定义请求与返回
+message hello_hu_request{
+    string name = 1;
+    int32 age = 2;
+}
+
+message hello_hu_reply{
+    string result = 1;
+}
