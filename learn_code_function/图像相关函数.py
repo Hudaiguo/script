@@ -12,5 +12,3 @@ import numpy as np
 cv2.imdecode(buf=, flags=)
 #将图片格式转换(编码)成流数据，赋值到内存缓存中;主要用于图像数据格式的压缩，方便网络传输。
 cv2.imencode(ext=, img=, params=)
-
-
