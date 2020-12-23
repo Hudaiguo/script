@@ -28,22 +28,25 @@ def process(src, h0, w0, h1, w1):
     image, contours, hierarchy = cv2.findContours(cut_bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     zb = []
     for c in contours:
+        # rect[0]返回矩形的中心点; rect[1]返回矩形长和宽; rect[2]返回旋转角度,角度计算不如下面方法准确
         rect = cv2.minAreaRect(c)
+        # 四个顶点坐标
         box = cv2.boxPoints(rect)
-        box = np.int0(box)
+        box = np.int64(box)
         zb.append(box)
     zb = zb[1:]
 
     return cut_img, zb
 
 
-def angle(cut_img, zb, point_num, anchor_era_th, show_img_flag=False):
+def angle(cut_img, zb, point_num, anchor_era_th, img_file_path, show_img_flag=False):
     """
     计算图像需要旋转的角度
-    :param img:切分之后的图像矩阵
+    :param cut_img:切分之后的图像矩阵
     :param zb:检测定位点的坐标
     :param point_num:定位点数量
     :param anchor_era_th:定位点区域面积
+    :param img_file_path:图像路径，用于写日志
     :param show_img_flag:是否显示查找到的定位点图像
     :return:计算旋转角度是否正常，需要旋转的角度。 True:处理正常
     """
@@ -70,7 +73,10 @@ def angle(cut_img, zb, point_num, anchor_era_th, show_img_flag=False):
         sita = (math.atan(y/x)/3.14159)*180
         return True, sita
     else:
-        print("不等于{}个坐标".format(point_num))
+        print("******************************************************")
+        print("图像定位点数量错误，<2个或大于{}个定位点".format(point_num))
+        print("******************************************************")
+        write_log_txt("{}, err1:图像定位点数量{}个，<2个或大于{}个定位点，检查配置文件定位点数量。".format(img_file_path, len(new_zb), point_num))
         return False, 0
 
 
@@ -136,7 +142,7 @@ def main():
                 write_log_txt("{}, err0:图像读取失败，检查是否含有非图像文件。".format(img_file_path))
                 continue
             cut_img, zb = process(img_ori, h0, w0, h1, w1)
-            flag, sita = angle(cut_img, zb, point_num, anchor_era_th, show_img_flag=show_img_flag)
+            flag, sita = angle(cut_img, zb, point_num, anchor_era_th, img_file_path, show_img_flag=show_img_flag)
             new_img = rotate(img_ori, sita)
             if flag:
                 save_path_new = os.path.join(save_path, root[len(save_path):])
