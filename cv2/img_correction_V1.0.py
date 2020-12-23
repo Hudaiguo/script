@@ -126,7 +126,7 @@ def cv2_imread(img_path, flag=1):
 def main():
     img_path = input("输入需要旋转的图像文件夹：")
     if not os.path.exists(img_path):
-        print("需要旋转的图像文件夹不存在！")
+        print("需要旋转的图像文件夹:  {},不存在！".format(img_path))
         return 0
     save_path = r'./processed_img'
     save_err_path = r'./err_img'
@@ -160,4 +160,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    print("************************已结束************************")
+    print("\n************************已结束************************\n")
