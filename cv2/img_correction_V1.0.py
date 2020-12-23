@@ -153,7 +153,7 @@ def main():
                 save_path_new = os.path.join(save_err_path, root[(len(img_path)+1):])
             if not os.path.exists(save_path_new):
                 os.makedirs(save_path_new)
-            cv2.imwrite(os.path.join(save_path_new, file), new_img)
+            cv2.imwrite(os.path.join(save_path_new,file), new_img)
             print("{},已完成{}幅图像,旋转角度为：{}".format(file, num, round(sita, 2)))
             num += 1
 
