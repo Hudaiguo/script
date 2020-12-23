@@ -124,12 +124,12 @@ def cv2_imread(img_path, flag=1):
 
 
 def main():
-    img_path = input("输入需要旋转的图像文件夹：")
+    img_path = os.path.abspath(input("输入需要旋转的图像文件夹："))
     if not os.path.exists(img_path):
         print("需要旋转的图像文件夹:  {},不存在！".format(img_path))
         return 0
-    save_path = r'./processed_img'
-    save_err_path = r'./err_img'
+    save_path = './processed_img'
+    save_err_path = './err_img'
     h0, w0, h1, w1, point_num, anchor_era_th, show_img_flag = read_ini("config.ini")
     num = 1
     for root, dirs, files in os.walk(img_path):
@@ -148,9 +148,9 @@ def main():
             flag, sita = angle(cut_img, zb, point_num, anchor_era_th, img_file_path, show_img_flag=show_img_flag)
             new_img = rotate(img_ori, sita)
             if flag:
-                save_path_new = os.path.join(save_path, root[len(save_path):])
+                save_path_new = os.path.join(save_path, root[(len(img_path)+1):])
             else:
-                save_path_new = os.path.join(save_err_path, root[len(save_path):])
+                save_path_new = os.path.join(save_err_path, root[(len(img_path)+1):])
             if not os.path.exists(save_path_new):
                 os.makedirs(save_path_new)
             cv2.imwrite(os.path.join(save_path_new, file), new_img)
