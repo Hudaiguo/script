@@ -115,12 +115,19 @@ def write_log_txt(text, log_ini_path="log.txt"):
 
 def cv2_imread(img_path, flag=1):
     """
-    读取中文路径的图像。 flag<0:多通道； flag=0:灰度图； flag>0:真彩图。
+    读取含有中文路径的图像。 flag<0:多通道； flag=0:灰度图； flag>0:真彩图。
     :param img_path:image path
     :param flag: flag<0:多通道； flag=0:灰度图； flag>0:真彩图.
     :return: image matrix
     """
     return cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), flag)
+
+
+def cv2_imwrite(img_path, img):
+    """
+    存储含有中文路径的图像。
+    """
+    cv2.imencode(os.path.splitext(img_path)[1], img)[1].tofile(img_path)
 
 
 def main():
@@ -153,7 +160,8 @@ def main():
                 save_path_new = os.path.join(save_err_path, root[(len(img_path)+1):])
             if not os.path.exists(save_path_new):
                 os.makedirs(save_path_new)
-            cv2.imwrite(os.path.join(save_path_new,file), new_img)
+            if not cv2.imwrite(os.path.join(save_path_new,file), new_img):
+                cv2_imwrite(os.path.join(save_path_new,file), new_img)
             print("{},已完成{}幅图像,旋转角度为：{}".format(file, num, round(sita, 2)))
             num += 1
 
