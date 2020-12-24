@@ -51,7 +51,7 @@ def process(src, h0, w0, h1, w1):
         print("定位点排列顺序：竖排")
         is_horizontal = "False"
     print("请确认定位点数量是否正确，不正确可以手动修改config.ini配置文件")
-    print("############再按esc键退出############")
+    print("#############再按esc键退出#############")
     cv2.imshow("draw_img", draw_img)
     cv2.waitKey(0)
 

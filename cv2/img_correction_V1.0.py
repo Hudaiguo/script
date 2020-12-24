@@ -167,7 +167,7 @@ def main():
                 os.makedirs(save_path_new)
             if not cv2.imwrite(os.path.join(save_path_new, file), new_img):
                 cv2_imwrite(os.path.join(save_path_new, file), new_img)
-            print("{},已完成{}幅图像,旋转角度为：{}".format(file, num, round(sita, 2)))
+            print("{},已完成{}幅图像,旋转角度为：{}".format(file, num, round(sita,2)))
             num += 1
 
 
