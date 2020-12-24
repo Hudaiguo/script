@@ -39,7 +39,7 @@ def process(src, h0, w0, h1, w1):
     return cut_img, zb
 
 
-def angle(cut_img, zb, point_num, anchor_era_th, img_file_path, show_img_flag=False):
+def angle(cut_img, zb, point_num, anchor_era_th, img_file_path, is_horizontal="True", show_img_flag=False):
     """
     计算图像需要旋转的角度
     :param cut_img:切分之后的图像矩阵
@@ -47,6 +47,7 @@ def angle(cut_img, zb, point_num, anchor_era_th, img_file_path, show_img_flag=Fa
     :param point_num:定位点数量
     :param anchor_era_th:定位点区域面积
     :param img_file_path:图像路径，用于写日志
+    :param is_horizontal:定位点是否横排："True"横排，其他为竖排
     :param show_img_flag:是否显示查找到的定位点图像
     :return:计算旋转角度是否正常，需要旋转的角度。 True:处理正常
     """
@@ -70,13 +71,16 @@ def angle(cut_img, zb, point_num, anchor_era_th, img_file_path, show_img_flag=Fa
         pt1 = new_zb[0][0]
         y = pt1[-1] - pt0[-1]
         x = pt1[0] - pt0[0]
-        sita = (math.atan(y/x)/3.14159)*180
+        if is_horizontal=="True":
+            sita = (math.atan(y/x)/3.14159)*180
+        else:
+            sita = -(math.atan(x/y)/3.14159)*180
         return True, sita
     else:
         print("******************************************************")
         print("图像定位点数量错误，<2个或大于{}个定位点".format(point_num))
         print("******************************************************")
-        write_log_txt("{}, err1:图像定位点数量{}个，<2个或大于{}个定位点，检查配置文件定位点数量。".format(img_file_path, len(new_zb), point_num))
+        write_log_txt("{}, err2:图像定位点数量{}个，<2个或大于{}个定位点，检查配置文件定位点数量。".format(img_file_path, len(new_zb), point_num))
         return False, 0
 
 
@@ -103,9 +107,10 @@ def read_ini(ini_path="config.ini"):
     h1, w1 = int(cf.get("Anchor_point_coordinates", "h1")), int(cf.get("Anchor_point_coordinates", "w1"))
     point_num = int(cf.get("Anchor_point_coordinates", "point_num"))
     anchor_era_th = int(cf.get("Anchor_point_coordinates", "anchor_era_th"))
+    is_horizontal = cf.get("Anchor_point_coordinates", "is_horizontal")
     show_img_flag = cf.get("Anchor_point_coordinates", "show_img_flag")
 
-    return h0, w0, h1, w1, point_num, anchor_era_th, show_img_flag
+    return h0, w0, h1, w1, point_num, anchor_era_th, is_horizontal, show_img_flag
 
 
 def write_log_txt(text, log_ini_path="log.txt"):
@@ -137,7 +142,7 @@ def main():
         return 0
     save_path = './processed_img'
     save_err_path = './err_img'
-    h0, w0, h1, w1, point_num, anchor_era_th, show_img_flag = read_ini("config.ini")
+    h0, w0, h1, w1, point_num, anchor_era_th, is_horizontal, show_img_flag = read_ini("config.ini")
     num = 1
     for root, dirs, files in os.walk(img_path):
         for file in files:
@@ -149,10 +154,10 @@ def main():
                 print("******************************************************")
                 print("{}, 图像读取失败，检查是否含有非图像文件".format(file))
                 print("******************************************************")
-                write_log_txt("{}, err0:图像读取失败，检查是否含有非图像文件。".format(img_file_path))
+                write_log_txt("{}, Err1:图像读取失败，检查是否含有非图像文件。".format(img_file_path))
                 continue
             cut_img, zb = process(img_ori, h0, w0, h1, w1)
-            flag, sita = angle(cut_img, zb, point_num, anchor_era_th, img_file_path, show_img_flag=show_img_flag)
+            flag, sita = angle(cut_img, zb, point_num, anchor_era_th, img_file_path, is_horizontal=is_horizontal, show_img_flag=show_img_flag)
             new_img = rotate(img_ori, sita)
             if flag:
                 save_path_new = os.path.join(save_path, root[(len(img_path)+1):])
@@ -160,8 +165,8 @@ def main():
                 save_path_new = os.path.join(save_err_path, root[(len(img_path)+1):])
             if not os.path.exists(save_path_new):
                 os.makedirs(save_path_new)
-            if not cv2.imwrite(os.path.join(save_path_new,file), new_img):
-                cv2_imwrite(os.path.join(save_path_new,file), new_img)
+            if not cv2.imwrite(os.path.join(save_path_new, file), new_img):
+                cv2_imwrite(os.path.join(save_path_new, file), new_img)
             print("{},已完成{}幅图像,旋转角度为：{}".format(file, num, round(sita, 2)))
             num += 1
 
