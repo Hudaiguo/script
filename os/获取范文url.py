@@ -85,27 +85,3 @@ def geturl_zuowen():
                 sql = "insert into zw2(url,text_name,remark,all_inf) values('{}','{}','{}', '{}')".format(url, text_name, remark, all_inf)
                 cursor.execute(sql)
 
-def get_txt(url):
-    pass
-
-#geturl_zuowen()
-
-
-with DB(db="test", user="root", passwd="********") as cursor:
-    sql = "select * from zw2"
-    isnum = cursor.execute(sql)
-#    print(isnum)
-    for sql_ in cursor.fetchall():
-#        print(sql_["url"])  #dict
-        url = sql_["url"]
-        html = requests.get(url)
-        content = html.text.encode('ISO-8859-1').decode('gbk')
-        pattern = re.compile('<div class="con_main wx_dbclick">(.*?)</div>',re.S)
-        
-#        <div class="con_main wx_dbclick">
-#        <div class="con_content">
-        text = re.findall(pattern,content)[0]
-        with open("page.txt", "w") as wd:
-            wd.write(content)
-        break
-print("end")
