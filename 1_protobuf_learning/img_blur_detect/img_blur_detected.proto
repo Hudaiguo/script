@@ -1,0 +1,18 @@
+syntax="proto3";   //使用proto版本3
+
+package blur_detected;     //起个包名
+
+//写服务
+service img_blur_detected{   //服务名
+//定义接口和数据类型  blur_detect 函数名
+   rpc blur_detect(img_gray_request)   returns(score_reply){}
+}
+
+//定义请求与返回
+message img_gray_request{
+    bytes img_gray = 1;
+}
+
+message score_reply{
+    string score = 1;
+}
